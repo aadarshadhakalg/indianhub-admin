@@ -1,6 +1,7 @@
 import 'package:admin/controller/stat_controller.dart';
 import 'package:admin/views/components/drawer.dart';
 import 'package:admin/views/screens/allusers.dart';
+import 'package:admin/views/screens/matches/matches_screen.dart';
 import 'package:admin/views/screens/notifyscreen.dart';
 import 'package:admin/views/screens/transactions/transactions.dart';
 import 'package:flutter/material.dart';
@@ -214,6 +215,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   onPressed: () {
                                     Get.to(Transactions());
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.sports_cricket,
+                                    color: Colors.cyan,
+                                    size: 30.0,
+                                  ),
+                                  onPressed: () {
+                                    Get.to(MatchesScreen());
                                   },
                                 ),
                               ),

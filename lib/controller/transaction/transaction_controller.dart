@@ -3,7 +3,6 @@ import 'package:admin/models/user_model.dart';
 import 'package:admin/services/firestore_helper.dart';
 import 'package:admin/views/screens/transactions/transactions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -44,6 +43,12 @@ class TransactionController extends GetxController {
     TransactionModel newModel = TransactionModel.fromMap(data);
 
     try {
+      if (model.type == 'withdraw') {
+        UserModel user = await _firestoreHelper.getUserDetail(model.uid);
+        Map userData = user.toJson();
+        userData['points'] = userData['points'] + model.amount;
+        _firestoreHelper.updateUser(UserModel.fromMap(userData));
+      }
       await _firestoreHelper.updateTransaction(newModel);
       Get.offAll(Transactions());
       Get.rawSnackbar(title: 'Rejected!', message: 'Request Rejected');
@@ -70,8 +75,11 @@ class TransactionController extends GetxController {
     try {
       await _firestoreHelper.updateTransaction(newModel);
       await _firestoreHelper.updateUser(newUserModel);
+      if (userModel.referredBy != '') {
+        await _firestoreHelper.updateBonus(userModel.referredBy!, model.uid);
+      }
       Get.offAll(Transactions());
-      Get.rawSnackbar(title: 'Rejected!', message: 'Request Rejected');
+      Get.rawSnackbar(title: 'Rejected!', message: 'Request Approved');
     } catch (e) {
       Get.rawSnackbar(title: 'Error!', message: 'Error while Approving');
     }
@@ -98,7 +106,7 @@ class TransactionController extends GetxController {
       await _firestoreHelper.updateTransaction(newModel);
       await _firestoreHelper.updateUser(newUserModel);
       Get.offAll(Transactions());
-      Get.rawSnackbar(title: 'Rejected!', message: 'Request Rejected');
+      Get.rawSnackbar(title: 'Rejected!', message: 'Request Approved');
     } catch (e) {
       Get.rawSnackbar(title: 'Error!', message: 'Error while Approving');
     }

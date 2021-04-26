@@ -3,6 +3,7 @@ import 'package:admin/models/transaction_model.dart';
 import 'package:admin/services/validator.dart';
 import 'package:admin/views/components/form_input_field_with_icon.dart';
 import 'package:admin/views/components/form_verticle_spacer.dart';
+import 'package:admin/views/screens/user_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +19,16 @@ class TransactionDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Transaction Detail'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Get.to(
+                UserDetail(id: model.uid),
+              );
+            },
+          )
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(20.0),
@@ -237,17 +248,16 @@ class TransactionDetail extends StatelessWidget {
                                           ElevatedButton(
                                             onPressed: () async {
                                               if (model.type == 'load') {
-                                                
                                                 await controller
                                                     .approveLoadTransaction(
                                                         model);
                                               } else {
                                                 if (_formKey.currentState!
-                                                  .validate()) {
-                                                await controller
-                                                    .approveWithdrawTransaction(
-                                                        model);
-                                                  }
+                                                    .validate()) {
+                                                  await controller
+                                                      .approveWithdrawTransaction(
+                                                          model);
+                                                }
                                               }
                                             },
                                             child: Text('Approve'),

@@ -1,3 +1,4 @@
+import 'package:admin/views/screens/Teams/teams_screen.dart';
 import 'package:admin/views/screens/allusers.dart';
 import 'package:admin/views/screens/notifyscreen.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,13 @@ class DrawerWidget extends StatelessWidget {
             },
             leading: Icon(Icons.group),
             title: Text("View Users"),
+          ),
+          ListTile(
+            onTap: () {
+              Get.to(TeamsScreen());
+            },
+            leading: Icon(Icons.ten_k),
+            title: Text("Teams"),
           ),
           ListTile(
             onTap: () {

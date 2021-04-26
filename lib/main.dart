@@ -1,5 +1,7 @@
+import 'package:admin/controller/matches/matches_controller.dart';
 import 'package:admin/controller/notification_controller.dart';
 import 'package:admin/controller/stat_controller.dart';
+import 'package:admin/controller/teams/teams_controller.dart';
 import 'package:admin/controller/transaction/transaction_controller.dart';
 import 'package:admin/views/screens/homescreen.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +76,8 @@ void main() async {
   Get.put<TransactionController>(TransactionController());
   Get.put<NotificationController>(NotificationController());
   Get.put<StatsController>(StatsController());
+  Get.put<MatchesController>(MatchesController());
+  Get.put<TeamsController>(TeamsController());
   runApp(AdminApp());
 }
 

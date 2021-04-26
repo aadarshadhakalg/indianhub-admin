@@ -7,6 +7,7 @@ class UserModel {
   final bool? isAdmin;
   final String referral;
   final int? points;
+  final String? referredBy;
 
   UserModel({
     required this.uid,
@@ -16,6 +17,7 @@ class UserModel {
     this.isAdmin,
     required this.referral,
     this.points,
+    this.referredBy,
   });
 
   factory UserModel.fromMap(Map data) {
@@ -27,9 +29,18 @@ class UserModel {
       isAdmin: data['isAdmin'] ?? false,
       referral: data['referral'],
       points: data['points'] ?? 0,
+      referredBy: data['referredBy'],
     );
   }
 
-  Map<String, dynamic> toJson() =>
-      {"uid": uid, "email": email, "name": name, "photoUrl": photoUrl,'isAdmin': isAdmin,'referral':referral,'points':points};
+  Map<String, dynamic> toJson() => {
+        "uid": uid,
+        "email": email,
+        "name": name,
+        "photoUrl": photoUrl,
+        'isAdmin': isAdmin,
+        'referral': referral,
+        'points': points,
+        'referredBy':referredBy,
+      };
 }

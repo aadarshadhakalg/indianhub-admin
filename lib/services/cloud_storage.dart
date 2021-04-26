@@ -6,12 +6,21 @@ class CloudStorageService {
   
 
   String _noticeImages = "notice_images";
+  String _teamsImages = "team_images";
 
   static CloudStorageService instance = CloudStorageService();
 
   Future<TaskSnapshot?> uploadNoticeImage(File image) async {
     try {
       return await _baseRef.child(_noticeImages).putFile(image).then((snapshot) => snapshot);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<TaskSnapshot?> uploadTeamImage(File image) async {
+    try {
+      return await _baseRef.child(_teamsImages).putFile(image).then((snapshot) => snapshot);
     } catch (e) {
       return null;
     }

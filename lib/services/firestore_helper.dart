@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:admin/models/team_model.dart';
 import 'package:admin/models/transaction_model.dart';
 import 'package:admin/models/user_model.dart';
+import 'package:admin/services/cloud_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreHelper {
   FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -47,7 +52,7 @@ class FirestoreHelper {
     return userModel;
   }
 
-  Future<void> updateUser(UserModel model)async{
+  Future<void> updateUser(UserModel model) async {
     await _db.collection('users').doc(model.uid).update(model.toJson());
   }
 
@@ -122,8 +127,59 @@ class FirestoreHelper {
     return allTransactions;
   }
 
-
-  Future<void> updateTransaction(TransactionModel model)async{
+  Future<void> updateTransaction(TransactionModel model) async {
     await _db.collection('transactions').doc(model.id).update(model.toJson());
+  }
+
+  ///Referral Helper
+  ///
+  ///
+  Future<void> updateBonus(String referralCode, String forUser) async {
+    QuerySnapshot referralcodes = await _db
+        .collection('referralcodes')
+        .where('code', isEqualTo: referralCode)
+        .get();
+    String documentid = referralcodes.docs[0].id;
+    DocumentSnapshot referralCodeSnapshot =
+        await _db.collection('referralcodes').doc(documentid).get();
+    Map<String, dynamic> referralData = referralCodeSnapshot.data()!;
+    List waitingForBonusList = referralData['waitingForBonus'];
+
+    if (waitingForBonusList.contains(forUser)) {
+      waitingForBonusList.remove(forUser);
+      referralData['bonusEarned'] = referralData['bonusEarned'] + 1;
+
+      referralData['waitingForBonus'] = waitingForBonusList;
+
+      _db.collection('referralcodes').doc(documentid).update(referralData);
+    }
+  }
+
+  ///Teams Helper
+  ///
+  ///
+
+  Future<List<TeamModel>> getAllTeams() async {
+    QuerySnapshot teamsSnapshot = await _db.collection('teams').get();
+    return teamsSnapshot.docs.map((e) {
+      Map<String, dynamic> data = e.data();
+      data.addAll(
+        {
+          'id': e.id,
+        },
+      );
+      return TeamModel.fromMap(data);
+    }).toList();
+  }
+
+  Future<void> addTeam(
+      {required String teamName, required File teamImage}) async {
+    TaskSnapshot? snapshot =
+        await CloudStorageService.instance.uploadTeamImage(teamImage);
+
+    await _db.collection('teams').add({
+      'teamName': teamName,
+      'teamImage': await snapshot!.ref.getDownloadURL(),
+    });
   }
 }
